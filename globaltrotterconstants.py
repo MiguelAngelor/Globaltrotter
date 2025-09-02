@@ -1,4 +1,6 @@
 
+import random
+
 #countries that border only 1 other country but are not islands:
 notislands = [
     "Canada",
@@ -14,6 +16,39 @@ notislands = [
     "Vatican City",
     "Lesotho"
 ]
+
+#create random funfact:
+
+def random_funfact(country_data):
+    funfact = []
+
+    official_n = country_data.get("name", {}).get("official", "N/A")
+    funfact.append(f"Official Name: {official_n}")
+
+    lang = ",".join(country_data.get("languages", {}).values()) if country_data.get("languages") else "N/A"
+    funfact.append(f"Language: {lang}")
+
+    popul = country_data.get("population", "N/A")
+    funfact.append(f"Population: {popul:,}")
+
+    capital = ",".join(country_data.get("capital", ["N/A"]))
+    funfact.append(f"Capital: {capital}")
+
+    area = country_data.get("area", "N/A")
+    funfact.append(f"Area: {area:,} km²")
+
+    currency = country_data.get("currencies", {})
+    if currency:
+        first_c = next(iter(currency.values()))
+        currency_name = first_c.get("name", "N/A")
+        currency_symbol = first_c.get("symbol", "N/A")
+    else:
+        currency_name = "N/A"
+        currency_symbol = "N/A"
+
+    funfact.append(f"Currency: {currency_name} ({currency_symbol})")
+
+    return random.choice(funfact)
 
 #Milestone Messages courtesy of chatGPT:
 

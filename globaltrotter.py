@@ -1,6 +1,6 @@
 import requests
 import random
-from globaltrotterconstants import notislands, end_messages 
+from globaltrotterconstants import notislands, end_messages, random_funfact
 
 #__________________GAME MODE__________________#
 def choose_mode():
@@ -54,9 +54,9 @@ def get_neighbors(country_data):
 
 #________________________________LIFE BAR and TOKEN______________________________#
 life_emoji = {
-    "By Foot":["🥾","👣","💪"],
-    "By Car":["🚗","⛽", "🚙", "🏎️"],
-    "By Plane":["✈️","🛫", "💺"],
+    "By Foot":["🥾","👣","⛺", "🦶"],
+    "By Car":["🚗", "🚙", "🏎️"],
+    "By Plane":["✈️","🛩️", "🛪"],
     "By NASA":["🚀","🛰️", "🛸"]
 }
 
@@ -64,7 +64,7 @@ token_emoji = {
     "By Foot": "🛶",
     "By Car": "⛽",
     "By Plane": "🎫",
-    "By NASA":"🪐"
+    "By NASA":"🌟"
 }
 
 r_index = random.choice([0,1,2])
@@ -135,7 +135,7 @@ def main():
 
 
         #--------Globaltrotting - PLAYER Input--------#
-        guess = input(f"""\nWe are currently visiting: {visited[-1]}{flag}\nPrevious Countries:{visited[-2:-5:-1]}\nWhat country shall we go next? """).strip()
+        guess = input(f"""\nWe are currently visiting: {visited[-1]}{flag}\n📚 {random_funfact(country_data)}\nPrevious Countries:{visited[-2:-5:-1]}\nWhat country shall we go next? """).strip()
         if guess.lower() == "end": break
         
         #--------IslandHopper--------#
@@ -145,7 +145,7 @@ def main():
             totalislandhops += 1
             while not country_data:
                 guess = input("""
-Ⓘ ⓢ ⓛ ⓐ ⓝ ⓓ Ⓗ ⓞ ⓟ ⓟ ⓔ ⓡ !!!
+Ⓘ ⓢ ⓛ ⓐ ⓝ ⓓ 🏝️Ⓗ ⓞ ⓟ ⓟ ⓔ ⓡ !!!
 One token consumed, what's your next destination? """).strip()
                 country_data = get_country(guess)
                 if not country_data: print("Country not found. Try again!")
@@ -166,12 +166,12 @@ One token consumed, what's your next destination? """).strip()
         if guess.lower() in (n.lower() for n in neighbors):
             country_data = get_country(guess)
             if country_data["name"]["common"] in visited: 
-                print("Country already visited, lost 1 life.")
+                print("Country already visited, lost 1 life.❌")
                 lives -= 1
         else:
             lives -=1
             if not neighbors_initials: neighbors_initials = ["None! Nada! No neighbours."]  
-            if lives > 0: print(f"\nNo match found. You lost life!\nHINT: The neighoring countries start with the letter: {neighbors_initials}")
+            if lives > 0: print(f"\nNo match found. You lost life!❌\nHINT: The neighoring countries start with the letter: {neighbors_initials}")
 
     #@@@@=======================END OF GAME LOOP========================@@@@@
 
