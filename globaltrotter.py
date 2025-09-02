@@ -1,6 +1,7 @@
 import requests
 import random
-from globaltrotterconstants import notislands, end_messages, random_funfact
+import webbrowser
+from globaltrotterconstants import notislands, end_messages, random_funfact, final_map
 
 #__________________GAME MODE__________________#
 def choose_mode():
@@ -135,7 +136,7 @@ def main():
 
 
         #--------Globaltrotting - PLAYER Input--------#
-        guess = input(f"""\nWe are currently visiting: {visited[-1]}{flag}\n📚 {random_funfact(country_data)}\nPrevious Countries:{visited[-2:-5:-1]}\nWhat country shall we go next? """).strip()
+        guess = input(f"""\nWe are currently visiting:🡆  {visited[-1]}{flag}  🡄\n📚 {random_funfact(country_data)}\nPrevious Countries:{visited[-2:-5:-1]}\nWhat country shall we go next? """).strip()
         if guess.lower() == "end": break
         
         #--------IslandHopper--------#
@@ -145,7 +146,7 @@ def main():
             totalislandhops += 1
             while not country_data:
                 guess = input("""
-Ⓘ ⓢ ⓛ ⓐ ⓝ ⓓ 🏝️Ⓗ ⓞ ⓟ ⓟ ⓔ ⓡ !!!
+Ⓘ ⓢ ⓛ ⓐ ⓝ ⓓ  🏝️  Ⓗ ⓞ ⓟ ⓟ ⓔ ⓡ !!!
 One token consumed, what's your next destination? """).strip()
                 country_data = get_country(guess)
                 if not country_data: print("Country not found. Try again!")
@@ -194,7 +195,7 @@ One token consumed, what's your next destination? """).strip()
     
     print(f"When you look back, this is your trail {life_emoji[transport][r_index] * 3}: {list(enumerate(visited,1))[::-1]}.\n")
     print(f"You visited {total_countries} different countries!\nYou used {moves} moves {map}.\nYou used {totalislandhops} IslandHopper tokens {token_emoji[transport]}.\nYou visited {total_countries/250}% of the countries!\nAll of this {transport.lower()}!") #Rest of Countries API has 250 countries and territories
-    
+    print(f"🗺️{final_map(visited)}🗺️")
     #Milestones:
     print('\nMILESTONES:')
     for i in range(1, total_countries+1):
@@ -211,7 +212,9 @@ One token consumed, what's your next destination? """).strip()
 
 
 
-    print("""
+    openmap = input("""
+______________________________________________________
+                    
 ╔╦╗┬ ┬┌─┐┌┐┌┬┌─┌─┐  ┌─┐┌─┐┬─┐  ╔═╗┬  ┌─┐┬ ┬┬┌┐┌┌─┐  
  ║ ├─┤├─┤│││├┴┐└─┐  ├┤ │ │├┬┘  ╠═╝│  ├─┤└┬┘│││││ ┬  
  ╩ ┴ ┴┴ ┴┘└┘┴ ┴└─┘  └  └─┘┴└─  ╩  ┴─┘┴ ┴ ┴ ┴┘└┘└─┘  
@@ -223,8 +226,17 @@ One token consumed, what's your next destination? """).strip()
    Created by: miguel.orellana.morales@gmail.com
              GitHub: @MiguelAngelOr
     Thanks to: restcountries.com API andBootDev.com.
+_______________________________________________________                    
+
+    Do you want to Open your Map? Y/N
           """)
 
+    if openmap.lower() == "y":
+        print("Opening. Thank you for your time!")
+        webbrowser.open("GlobalTrotter_map.html")
+    else:
+        print("Declined. Thank you for your time!")
+ 
 
 if __name__ == "__main__":
     main()

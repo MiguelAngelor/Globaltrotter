@@ -1,5 +1,7 @@
 
 import random
+import folium
+import requests
 
 #countries that border only 1 other country but are not islands:
 notislands = [
@@ -16,6 +18,24 @@ notislands = [
     "Vatican City",
     "Lesotho"
 ]
+
+#create MAP:
+
+def final_map(visited):
+    fmap = folium.Map(location=[20,0], zoom_start=2)
+    notfound =[]
+    for country in visited:
+        try: 
+            rest = requests.get(f"https://restcountries.com/v3.1/name/{country}").json()[0]
+            lat, lon = rest["latlng"]
+            folium.Marker([lat,lon], popup= country, icon = folium.Icon(color="green")).add_to(fmap)
+        except (KeyError, IndexError):
+            notfound.append(country)
+
+    fmap.save("GlobalTrotter_map.html")
+
+    return f"With your power a MAP has been Created!\nOpen GlobalTrotter_map.html in your browser.\n(Countries that couldn't be found: {notfound})"
+
 
 #create random funfact:
 
