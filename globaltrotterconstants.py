@@ -2,6 +2,8 @@
 import random
 import folium
 import requests
+from datetime import datetime
+from folium.features import DivIcon
 
 #countries that border only 1 other country but are not islands:
 notislands = [
@@ -21,21 +23,56 @@ notislands = [
 
 #create MAP:
 
-def final_map(visited):
+def final_map(visited, emoji):
     fmap = folium.Map(location=[20,0], zoom_start=2)
     notfound =[]
+    
+
+    #TITLE TO MAP:
+    folium.map.Marker(
+        location=[85,0],
+        icon=DivIcon(
+            icon_size=(250,36),
+            icon_anchor=(125,0),
+            html= """
+        <div style="text-align:center;">
+            <div style="font-size:32px; font-weight:bold; color:darkblue; text-shadow: 2px 2px 4px #aaa;">
+                Globetrotter🌍
+            </div>
+            <div style="font-size:18px; color:gray;">
+                Travel the world, one country at a time!
+            </div>
+        </div>
+        """
+        )
+    ).add_to(fmap)
+
+    #ADD MARKERS
     for country in visited:
         try: 
             rest = requests.get(f"https://restcountries.com/v3.1/name/{country}").json()[0]
             lat, lon = rest["latlng"]
-            folium.Marker([lat,lon], popup= country, icon = folium.Icon(color="green")).add_to(fmap)
+            folium.Marker(
+                location=[lat,lon],
+                tooltip= country,
+                icon = folium.Icon(color="darkblue", icon="globe", prefix="fa")
+                ).add_to(fmap)
         except (KeyError, IndexError):
             notfound.append(country)
 
-    fmap.save("GlobalTrotter_map.html")
+    #TIME STAMP:
+    file_timestamp = datetime.now().strftime("%y%m%d_%H%M")
+    filename = f"GlobalTrotter_map_{file_timestamp}.html"
+    fmap.save(filename)
+    display_timestamp = datetime.now().strftime("%m/%d/%Y %H:%M")
+    #not found message
+    not_found_message = "None, all fetched!" if not notfound else ", ".join(notfound)
 
-    return f"With your power a MAP has been Created!\nOpen GlobalTrotter_map.html in your browser.\n(Countries that couldn't be found: {notfound})"
-
+    return (f"With your experience {emoji} a MAP has been Created!\n"
+            f"Open {filename} in your browser.\n"
+            f"Created on: {display_timestamp}\n"
+            f'Countries not fetched in "Draw your map" function: {not_found_message}.'
+            ),filename
 
 #create random funfact:
 

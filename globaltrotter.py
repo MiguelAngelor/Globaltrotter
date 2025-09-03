@@ -5,25 +5,20 @@ from globaltrotterconstants import notislands, end_messages, random_funfact, fin
 
 #__________________GAME MODE__________________#
 def choose_mode():
-    print("Hello Globetrotter, choose your traverse method:")
     modes = {
-        "1": ("By Foot", 3),
-        "2": ("By Car", 6),
-        "3": ("By Plane", 9),
-        "0": ("By NASA", 18)
-    }
-
-    for k,v in modes.items():
-        print(f"{k}. {v[0]} ({v[1]} lives)")
+        "1": ("By Foot", 3, "This adventure is powered by... your own feet, that's crazy!"),
+        "2": ("By Car", 6, "Time to hit the road, nothing like 4 wheels and A/C."),
+        "3": ("By Plane", 9, "First Class passangers, time to board"),
+        "0": ("By NASA", 18, "NASA?! Huston, we have a problem.")
+            }
+    print("Hello Globetrotter, choose your traverse method:")
+    for k, (name, lives, _) in modes.items():
+        print(f"{k}. {name} ({lives} lives)")
     
     choice = input("\nEnter 1, 2, 3 or 0: ")
-    if choice not in modes: 
-        print("\nInvalid choice! Default: By Foot.")
-    else:
-        hittheroad = ["NASA?! Huston, we have a problem.", "This adventure is sponsored and powered by... your own feet, crazy!", "Time to hit the road, nothing like 4 wheels and A/C.","First Class passangers, time to board!"]
-        print("\n" + hittheroad[int(choice)])
-
-    return modes.get(choice, ("By Foot", 3))
+    mode, lives, message = modes.get(choice, ("By Foot", 3, "Invalid choice! Default: By Foot.\nThis adventure is sponsored by... your own feet, crazy!"))
+    print("\n" + message)
+    return mode, lives
 
 #__________________COUNTRIES DATA__________________#
 
@@ -72,7 +67,7 @@ r_index = random.choice([0,1,2])
 
 def lifebar(transport_mode, lives, tokens, index=r_index):
     emoji = life_emoji[transport_mode][index]
-    return f"HP: {emoji*lives}\nTokens: {token_emoji[transport_mode] * tokens}"
+    return f"HP: {(emoji+' ')*lives}\nTokens: {(token_emoji[transport_mode]+' ') * tokens}"
 
 #________________________________GAME______________________________#
 
@@ -156,6 +151,7 @@ One token consumed, what's your next destination? """).strip()
                 "By Plane":f'You board first class. After a few hours you get to {country_data["name"]["common"]}!',
                 "By NASA": f'SONICBOOM!!! after minutes you land at {country_data["name"]["common"]}!'
                 }
+            print("_________________________________________________________________________________")
             print(islandmessage[transport])
             continue
         elif guess == "hop!" and islandhop <= 0:
@@ -173,11 +169,13 @@ One token consumed, what's your next destination? """).strip()
             lives -=1
             if not neighbors_initials: neighbors_initials = ["None! Nada! No neighbours."]  
             if lives > 0: print(f"\nNo match found. You lost life!❌\nHINT: The neighoring countries start with the letter: {neighbors_initials}")
-
+        
+        #Final Check of the LOOP:
+        if lives == 0: print("Wrong move! ;_;" )
     #@@@@=======================END OF GAME LOOP========================@@@@@
 
     while True:
-        map = input(f"\nGAME OVER! Did you use a map while playing? Y/N ").lower()
+        map = input(f"\nGAME OVER! Did you open a map while playing? Y/N ").lower()
         if map == "y":
             map = "with the help of a Map!"
             break
@@ -194,13 +192,14 @@ One token consumed, what's your next destination? """).strip()
           """)
     
     print(f"When you look back, this is your trail {life_emoji[transport][r_index] * 3}: {list(enumerate(visited,1))[::-1]}.\n")
-    print(f"You visited {total_countries} different countries!\nYou used {moves} moves {map}.\nYou used {totalislandhops} IslandHopper tokens {token_emoji[transport]}.\nYou visited {total_countries/250}% of the countries!\nAll of this {transport.lower()}!") #Rest of Countries API has 250 countries and territories
-    print(f"🗺️{final_map(visited)}🗺️")
+    print(f"You visited {total_countries} different countries!\n"
+                       f"You used {moves} moves {map}.\n"
+                       f"You used {totalislandhops} IslandHopper tokens {token_emoji[transport]}.\n"
+                       f"You visited {(total_countries/250)*100:.2f}% of the countries!\n" #Rest of Countries API has 250 countries and territories
+                       f"All of this {transport.lower()}!") 
+
     #Milestones:
     print('\nMILESTONES:')
-    for i in range(1, total_countries+1):
-        if i in end_messages[transport]:
-            print(f"Visited {i}: {random.choice(end_messages[transport][i])}")
     if total_countries < 5:
         msg = random.choice([
             "Keep going, Globetrotter! 🌍",
@@ -208,11 +207,23 @@ One token consumed, what's your next destination? """).strip()
             "Your journey is just getting started! ✨",
             "Every step counts! 🥾",
             "Onward, explorer! 🗺️"])
-        print(f"Visited {i}: {msg}")
+        print(f"Visited {total_countries}: {msg}")
+        
+    for i in range(1, total_countries+1):
+        if i in end_messages[transport]:
+            print(f"Visited {i}: {random.choice(end_messages[transport][i])}")
 
+    create_map = input("\nDraw a Map (html file) of your adventure? (Y/N)")
 
+    #drawing map
+    if create_map.lower() == "y":
+        mapmessage, filename = final_map(visited, life_emoji[transport][r_index])
+        print(f"\n{mapmessage}")
+        webbrowser.open(filename)
+    else:
+        print("\nNo map was created.")
 
-    openmap = input("""
+    print("""
 ______________________________________________________
                     
 ╔╦╗┬ ┬┌─┐┌┐┌┬┌─┌─┐  ┌─┐┌─┐┬─┐  ╔═╗┬  ┌─┐┬ ┬┬┌┐┌┌─┐  
@@ -226,17 +237,26 @@ ______________________________________________________
    Created by: miguel.orellana.morales@gmail.com
              GitHub: @MiguelAngelOr
     Thanks to: restcountries.com API andBootDev.com.
-_______________________________________________________                    
+      Ascii: https://patorjk.com/software/taag/
+_______________________________________________________\n""")                    
+###opening map (OPTIONAL) NOT USED
+#   if create_map.lower() == "y":
+#        openmap = input("""
+#          +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+#          |D|r|a|w| |y|o|u|r| |M|a|p|:|
+#          +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+#        Do you want to Open your Map? Y/N
+#          """)
+#        if openmap.lower() == "y":
+#            print("""
+#       Opening... Thanks for your time, see you soon!
+#          """)
+#            webbrowser.open(filename)
+#        else:
+#            print("""
+# Map was not opened at this time. Thanks for your time, see you soon!
+#          """)###
 
-    Do you want to Open your Map? Y/N
-          """)
-
-    if openmap.lower() == "y":
-        print("Opening. Thank you for your time!")
-        webbrowser.open("GlobalTrotter_map.html")
-    else:
-        print("Declined. Thank you for your time!")
- 
 
 if __name__ == "__main__":
     main()

@@ -7,3 +7,7 @@ __pycache__/
 
 # OS files
 .DS_Store
+
+# HTML
+GlobalTrotter_map_*.html
+GlobalTrotter_map.html
