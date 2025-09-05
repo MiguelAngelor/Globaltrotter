@@ -48,6 +48,9 @@ def get_neighbors(country_data):
     neighbors_initials = [word[0] for word in neighbors]
     return neighbors, neighbors_initials
 
+def get_flag(country): #using .get for safety
+    return country.get("flag","")
+
 #________________________________LIFE BAR and TOKEN______________________________#
 life_emoji = {
     "By Foot":["🥾","👣","⛺", "🦶"],
@@ -110,7 +113,7 @@ def main():
         if not country_data: print("Country not found. Try again!")
     
     current_country = country_data["name"]["common"]
-    flag = country_data.get("flag", "")
+    flag = get_flag(country_data)
     print(f"Welcome to {current_country}{flag}! You have {lives} lives and you travel {transport.lower()}.")
     print("\nTime to start your adventure! Remember you can only travel to neighbouring countries!")
 
@@ -123,8 +126,8 @@ def main():
         flag = country_data.get("flag","")
         #--------Get the neighbors and islandhop refresh--------#
         neighbors, neighbors_initials = get_neighbors(country_data)
-        if len(neighbors) <= 1 and current_country not in notislands: islandhop += 2
-        if islandhop > 3: islandhop = 3
+        if len(neighbors) <= 1 and current_country not in notislands: 
+            islandhop = min(islandhop + 2, 3)
 
         # Print Lifebar and Tokens
         print(lifebar(transport, lives, tokens=islandhop))
@@ -229,15 +232,16 @@ ______________________________________________________
 ╔╦╗┬ ┬┌─┐┌┐┌┬┌─┌─┐  ┌─┐┌─┐┬─┐  ╔═╗┬  ┌─┐┬ ┬┬┌┐┌┌─┐  
  ║ ├─┤├─┤│││├┴┐└─┐  ├┤ │ │├┬┘  ╠═╝│  ├─┤└┬┘│││││ ┬  
  ╩ ┴ ┴┴ ┴┘└┘┴ ┴└─┘  └  └─┘┴└─  ╩  ┴─┘┴ ┴ ┴ ┴┘└┘└─┘  
-     ╔═╗┬  ┌─┐┌┐ ┌─┐┬ ┌┬┐┬─┐┌─┐┌┬┐┌┬┐┌─┐┬─┐┬      
-     ║ ╦│  │ │├┴┐├─┤│  │ ├┬┘│ │ │  │ ├┤ ├┬┘│     
-     ╚═╝┴─┘└─┘└─┘┴ ┴┴─┘┴ ┴└─└─┘ ┴  ┴ └─┘┴└─o 
+      ╔═╗┬  ┌─┐┌┐ ┌─┐┌┬┐┬─┐┌─┐┌┬┐┌┬┐┌─┐┬─┐┬      
+      ║ ╦│  │ │├┴┐├┤  │ ├┬┘│ │ │  │ ├┤ ├┬┘│     
+      ╚═╝┴─┘└─┘└─┘└─┘ ┴ ┴└─└─┘ ┴  ┴ └─┘┴└─o 
                        🌏
           
    Created by: miguel.orellana.morales@gmail.com
              GitHub: @MiguelAngelOr
     Thanks to: restcountries.com API andBootDev.com.
       Ascii: https://patorjk.com/software/taag/
+                Map library: Folium
 _______________________________________________________\n""")                    
 ###opening map (OPTIONAL) NOT USED
 #   if create_map.lower() == "y":
