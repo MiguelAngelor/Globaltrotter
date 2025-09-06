@@ -1,6 +1,7 @@
 import requests
 import random
 import webbrowser
+import time #to create a small delay before opening the map
 from globaltrotterconstants import notislands, end_messages, random_funfact, final_map
 
 #__________________GAME MODE__________________#
@@ -222,6 +223,7 @@ One token consumed, what's your next destination? """).strip()
     if create_map.lower() == "y":
         mapmessage, filename = final_map(visited, life_emoji[transport][r_index])
         print(f"\n{mapmessage}")
+        time.sleep(0.1) #100 ms of delay to open the map
         webbrowser.open(filename)
     else:
         print("\nNo map was created.")
