@@ -62,7 +62,7 @@ def final_map(visited, emoji):
 
     #TIME STAMP:
     file_timestamp = datetime.now().strftime("%y%m%d_%H%M")
-    filename = f"GlobalTrotter_map_{file_timestamp}.html"
+    filename = f"GlobeTrotter_map_{file_timestamp}.html"
     fmap.save(filename)
     display_timestamp = datetime.now().strftime("%m/%d/%Y %H:%M")
     #not found message
