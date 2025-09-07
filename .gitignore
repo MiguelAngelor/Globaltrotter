@@ -9,5 +9,5 @@ __pycache__/
 .DS_Store
 
 # HTML
-GlobalTrotter_map_*.html
-GlobalTrotter_map.html
+GlobeTrotter_map_*.html
+GlobeTrotter_map.html
