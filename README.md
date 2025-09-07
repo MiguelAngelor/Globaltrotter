@@ -10,11 +10,11 @@ and at the end, you can create a map of your journey!
 
 Features
 
-Multiple travel modes: By Foot, By Car, By Plane, By NASA
-Life system and IslandHopper tokens
-Fun facts about each visited country
-Optional interactive map of visited countries
-Milestone messages for your journey
+Multiple travel modes: By Foot, By Car, By Plane, By NASA.
+Life system and IslandHopper tokens.
+Fun facts about each visited country.
+Optional interactive map of visited countries.
+Milestone messages for your journey.
 
 Rules
 
